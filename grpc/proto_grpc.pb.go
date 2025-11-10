@@ -8,6 +8,7 @@ package proto
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,16 +20,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ITUDatabase_GetMessages_FullMethodName  = "/ITUDatabase/GetMessages"
-	ITUDatabase_SendMessages_FullMethodName = "/ITUDatabase/SendMessages"
+	ITUDatabase_ServerSend_FullMethodName = "/ITUDatabase/ServerSend"
+	ITUDatabase_ClientSend_FullMethodName = "/ITUDatabase/ClientSend"
 )
 
 // ITUDatabaseClient is the client API for ITUDatabase service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ITUDatabaseClient interface {
-	GetMessages(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error)
-	SendMessages(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Empty, error)
+	ServerSend(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error)
+	ClientSend(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type iTUDatabaseClient struct {
@@ -39,20 +40,20 @@ func NewITUDatabaseClient(cc grpc.ClientConnInterface) ITUDatabaseClient {
 	return &iTUDatabaseClient{cc}
 }
 
-func (c *iTUDatabaseClient) GetMessages(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error) {
+func (c *iTUDatabaseClient) ServerSend(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Message)
-	err := c.cc.Invoke(ctx, ITUDatabase_GetMessages_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ITUDatabase_ServerSend_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *iTUDatabaseClient) SendMessages(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Empty, error) {
+func (c *iTUDatabaseClient) ClientSend(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, ITUDatabase_SendMessages_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ITUDatabase_ClientSend_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +64,8 @@ func (c *iTUDatabaseClient) SendMessages(ctx context.Context, in *Message, opts 
 // All implementations must embed UnimplementedITUDatabaseServer
 // for forward compatibility.
 type ITUDatabaseServer interface {
-	GetMessages(context.Context, *Empty) (*Message, error)
-	SendMessages(context.Context, *Message) (*Empty, error)
+	ServerSend(context.Context, *Empty) (*Message, error)
+	ClientSend(context.Context, *Message) (*Empty, error)
 	mustEmbedUnimplementedITUDatabaseServer()
 }
 
@@ -75,11 +76,11 @@ type ITUDatabaseServer interface {
 // pointer dereference when methods are called.
 type UnimplementedITUDatabaseServer struct{}
 
-func (UnimplementedITUDatabaseServer) GetMessages(context.Context, *Empty) (*Message, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMessages not implemented")
+func (UnimplementedITUDatabaseServer) ServerSend(context.Context, *Empty) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServerSend not implemented")
 }
-func (UnimplementedITUDatabaseServer) SendMessages(context.Context, *Message) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMessages not implemented")
+func (UnimplementedITUDatabaseServer) ClientSend(context.Context, *Message) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClientSend not implemented")
 }
 func (UnimplementedITUDatabaseServer) mustEmbedUnimplementedITUDatabaseServer() {}
 func (UnimplementedITUDatabaseServer) testEmbeddedByValue()                     {}
@@ -102,38 +103,38 @@ func RegisterITUDatabaseServer(s grpc.ServiceRegistrar, srv ITUDatabaseServer) {
 	s.RegisterService(&ITUDatabase_ServiceDesc, srv)
 }
 
-func _ITUDatabase_GetMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ITUDatabase_ServerSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ITUDatabaseServer).GetMessages(ctx, in)
+		return srv.(ITUDatabaseServer).ServerSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ITUDatabase_GetMessages_FullMethodName,
+		FullMethod: ITUDatabase_ServerSend_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ITUDatabaseServer).GetMessages(ctx, req.(*Empty))
+		return srv.(ITUDatabaseServer).ServerSend(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ITUDatabase_SendMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ITUDatabase_ClientSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ITUDatabaseServer).SendMessages(ctx, in)
+		return srv.(ITUDatabaseServer).ClientSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ITUDatabase_SendMessages_FullMethodName,
+		FullMethod: ITUDatabase_ClientSend_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ITUDatabaseServer).SendMessages(ctx, req.(*Message))
+		return srv.(ITUDatabaseServer).ClientSend(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -146,12 +147,12 @@ var ITUDatabase_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ITUDatabaseServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetMessages",
-			Handler:    _ITUDatabase_GetMessages_Handler,
+			MethodName: "ServerSend",
+			Handler:    _ITUDatabase_ServerSend_Handler,
 		},
 		{
-			MethodName: "SendMessages",
-			Handler:    _ITUDatabase_SendMessages_Handler,
+			MethodName: "ClientSend",
+			Handler:    _ITUDatabase_ClientSend_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

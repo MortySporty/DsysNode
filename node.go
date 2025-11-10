@@ -58,6 +58,7 @@ func (s *ITU_databaseServer) start_server(ID int64) {
 	proto.RegisterITUDatabaseServer(grpcserver, s)
 
 	fmt.Printf("Starting gRPC server on %s", port)
+
 	if err := grpcserver.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve gRPC: %v", err)
 	}
@@ -68,14 +69,38 @@ func clientConnect(port int) {
 
 	if err != nil {
 		log.Fatalf("Count not connect to port: %d", port)
+		return
 	}
 
 	client := proto.NewITUDatabaseClient(conn)
-	client.SendMessages(context.Background(), &proto.Message{
-		Message: []string{"hello"},
-	})
+
+	_, err = client.ServerSend(context.Background(), &proto.Empty{})
 
 	if err != nil {
-		log.Fatalf("WE DID NOT RECIEVE OR FAILED TO SEND")
+		fmt.Printf("\nCould not connect to server on port %d: %v", port, err)
+	} else {
+		fmt.Printf("\nconnected to server on port %d", port)
 	}
+
+	// log.Printf("Successfully connected and called server on port %d", port)
+
+}
+
+func send(client proto.ITUDatabaseClient, ID string, time int, input string) {
+
+	msgText := fmt.Sprintf("%s: %s (LOGICAL TIME: %d)", ID, input, time)
+
+	client.ClientSend(context.Background(), &proto.Message{
+		Message: []string{msgText},
+		Tick:    int32(time),
+	})
+}
+
+func (s *ITU_databaseServer) ServerSend(ctx context.Context, in *proto.Empty) (*proto.Message, error) {
+
+	// placeholder
+	return &proto.Message{
+		Message: []string{"hej"},
+		Tick:    100,
+	}, nil
 }
