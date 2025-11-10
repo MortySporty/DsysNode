@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "ITUDataBase/grpc/proto";
+option go_package = "DsysNode/grpc/proto";
 
 message Message {
   // In a .proto file, when you declare a field as repeated, it means:
