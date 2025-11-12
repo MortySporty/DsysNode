@@ -121,12 +121,12 @@ const file_proto_proto_rawDesc = "" +
 	"\aMessage\x12\x18\n" +
 	"\amessage\x18\x01 \x03(\tR\amessage\x12\x12\n" +
 	"\x04tick\x18\x02 \x01(\x05R\x04tick\"\a\n" +
-	"\x05Empty2Q\n" +
-	"\vITUDatabase\x12 \n" +
+	"\x05Empty2x\n" +
+	"\vITUDatabase\x12$\n" +
+	"\x0eTestConnection\x12\x06.Empty\x1a\b.Message\"\x00\x12 \n" +
 	"\n" +
-	"ServerSend\x12\x06.Empty\x1a\b.Message\"\x00\x12 \n" +
-	"\n" +
-	"ClientSend\x12\b.Message\x1a\x06.Empty\"\x00B\x15Z\x13DsysNode/grpc/protob\x06proto3"
+	"ClientSend\x12\b.Message\x1a\x06.Empty\"\x00\x12!\n" +
+	"\tSendReply\x12\b.Message\x1a\b.Message\"\x00B\x15Z\x13DsysNode/grpc/protob\x06proto3"
 
 var (
 	file_proto_proto_rawDescOnce sync.Once
@@ -146,12 +146,14 @@ var file_proto_proto_goTypes = []any{
 	(*Empty)(nil),   // 1: Empty
 }
 var file_proto_proto_depIdxs = []int32{
-	1, // 0: ITUDatabase.ServerSend:input_type -> Empty
+	1, // 0: ITUDatabase.TestConnection:input_type -> Empty
 	0, // 1: ITUDatabase.ClientSend:input_type -> Message
-	0, // 2: ITUDatabase.ServerSend:output_type -> Message
-	1, // 3: ITUDatabase.ClientSend:output_type -> Empty
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	0, // 2: ITUDatabase.SendReply:input_type -> Message
+	0, // 3: ITUDatabase.TestConnection:output_type -> Message
+	1, // 4: ITUDatabase.ClientSend:output_type -> Empty
+	0, // 5: ITUDatabase.SendReply:output_type -> Message
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

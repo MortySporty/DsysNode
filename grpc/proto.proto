@@ -6,12 +6,13 @@ message Message {
   // That field is like an array or list.
   // It can contain zero, one, or many values of the given type.
   repeated string message = 1;
-  int tick = 2;
+  int32 tick = 2;
 }
 
 message Empty{}
 
  service ITUDatabase {
-   rpc ServerSend (Empty) returns (Message) {};
+   rpc TestConnection (Empty) returns (Message) {};
    rpc ClientSend (Message) returns (Empty) {};
+   rpc SendReply (Message) returns (Message){};
  }

@@ -20,16 +20,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ITUDatabase_ServerSend_FullMethodName = "/ITUDatabase/ServerSend"
-	ITUDatabase_ClientSend_FullMethodName = "/ITUDatabase/ClientSend"
+	ITUDatabase_TestConnection_FullMethodName = "/ITUDatabase/TestConnection"
+	ITUDatabase_ClientSend_FullMethodName     = "/ITUDatabase/ClientSend"
+	ITUDatabase_SendReply_FullMethodName      = "/ITUDatabase/SendReply"
 )
 
 // ITUDatabaseClient is the client API for ITUDatabase service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ITUDatabaseClient interface {
-	ServerSend(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error)
+	TestConnection(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error)
 	ClientSend(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Empty, error)
+	SendReply(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
 }
 
 type iTUDatabaseClient struct {
@@ -40,10 +42,10 @@ func NewITUDatabaseClient(cc grpc.ClientConnInterface) ITUDatabaseClient {
 	return &iTUDatabaseClient{cc}
 }
 
-func (c *iTUDatabaseClient) ServerSend(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error) {
+func (c *iTUDatabaseClient) TestConnection(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Message, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Message)
-	err := c.cc.Invoke(ctx, ITUDatabase_ServerSend_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ITUDatabase_TestConnection_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -60,12 +62,23 @@ func (c *iTUDatabaseClient) ClientSend(ctx context.Context, in *Message, opts ..
 	return out, nil
 }
 
+func (c *iTUDatabaseClient) SendReply(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Message)
+	err := c.cc.Invoke(ctx, ITUDatabase_SendReply_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ITUDatabaseServer is the server API for ITUDatabase service.
 // All implementations must embed UnimplementedITUDatabaseServer
 // for forward compatibility.
 type ITUDatabaseServer interface {
-	ServerSend(context.Context, *Empty) (*Message, error)
+	TestConnection(context.Context, *Empty) (*Message, error)
 	ClientSend(context.Context, *Message) (*Empty, error)
+	SendReply(context.Context, *Message) (*Message, error)
 	mustEmbedUnimplementedITUDatabaseServer()
 }
 
@@ -76,11 +89,14 @@ type ITUDatabaseServer interface {
 // pointer dereference when methods are called.
 type UnimplementedITUDatabaseServer struct{}
 
-func (UnimplementedITUDatabaseServer) ServerSend(context.Context, *Empty) (*Message, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ServerSend not implemented")
+func (UnimplementedITUDatabaseServer) TestConnection(context.Context, *Empty) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
 }
 func (UnimplementedITUDatabaseServer) ClientSend(context.Context, *Message) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientSend not implemented")
+}
+func (UnimplementedITUDatabaseServer) SendReply(context.Context, *Message) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendReply not implemented")
 }
 func (UnimplementedITUDatabaseServer) mustEmbedUnimplementedITUDatabaseServer() {}
 func (UnimplementedITUDatabaseServer) testEmbeddedByValue()                     {}
@@ -103,20 +119,20 @@ func RegisterITUDatabaseServer(s grpc.ServiceRegistrar, srv ITUDatabaseServer) {
 	s.RegisterService(&ITUDatabase_ServiceDesc, srv)
 }
 
-func _ITUDatabase_ServerSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ITUDatabase_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ITUDatabaseServer).ServerSend(ctx, in)
+		return srv.(ITUDatabaseServer).TestConnection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ITUDatabase_ServerSend_FullMethodName,
+		FullMethod: ITUDatabase_TestConnection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ITUDatabaseServer).ServerSend(ctx, req.(*Empty))
+		return srv.(ITUDatabaseServer).TestConnection(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -139,6 +155,24 @@ func _ITUDatabase_ClientSend_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ITUDatabase_SendReply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ITUDatabaseServer).SendReply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ITUDatabase_SendReply_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ITUDatabaseServer).SendReply(ctx, req.(*Message))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ITUDatabase_ServiceDesc is the grpc.ServiceDesc for ITUDatabase service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -147,12 +181,16 @@ var ITUDatabase_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ITUDatabaseServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ServerSend",
-			Handler:    _ITUDatabase_ServerSend_Handler,
+			MethodName: "TestConnection",
+			Handler:    _ITUDatabase_TestConnection_Handler,
 		},
 		{
 			MethodName: "ClientSend",
 			Handler:    _ITUDatabase_ClientSend_Handler,
+		},
+		{
+			MethodName: "SendReply",
+			Handler:    _ITUDatabase_SendReply_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
